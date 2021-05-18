@@ -265,3 +265,5 @@ htmlspecialchars( 変換対象, 変換パターン, 文字コード )
 function h($str){
   return htmlspecialchars($str,ENT_QUOTES,'UTF-8');
 }
+
+
