@@ -51,11 +51,11 @@ function get_items($db, $is_open = false){
   ';
   if($is_open === true){
     $sql .= '
-      WHERE status = ?
+      WHERE status = 1
     ';
   }
 
-  return fetch_all_query($db, $sql,[1]);
+  return fetch_all_query($db, $sql);
 }
 
 /*
