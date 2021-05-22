@@ -266,4 +266,23 @@ function h($str){
   return htmlspecialchars($str,ENT_QUOTES,'UTF-8');
 }
 
+//CSRFトークンを作成
+//疑似乱数の文字列を生成する
+//セッションにcsfrtokenをセット
+function get_csrf_token(){
+  
+  $token = get_random_string();
+  
+  set_session('csrf_token',$token);
 
+  return $token;
+  }
+
+// トークンのチェック
+function is_valid_csrf_token($token){
+  if($token === '') {
+    return false;
+  }
+  // get_session()はユーザー定義関数
+  return $token === get_session('csrf_token');
+}

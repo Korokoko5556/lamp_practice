@@ -18,7 +18,22 @@ if(is_admin($user) === false){
   redirect_to(LOGIN_URL);
 }
 
+$token = get_post('csrftoken');
+
+if(is_valid_csrf_token($token) === false){
+  set_error('不正なリクエストです。');
+
+  redirect_to(ADMIN_URL);
+}
+
 $item_id = get_post('item_id');
+
+//セッションに保存しておいたトークンの削除
+unset($_SESSION['csrftoken']);
+//セッションの保存
+session_write_close();
+//セッションの再開
+session_start();
 
 
 if(destroy_item($db, $item_id) === true){

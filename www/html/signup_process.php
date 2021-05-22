@@ -15,6 +15,22 @@ $password_confirmation = get_post('password_confirmation');
 
 $db = get_db_connect();
 
+$token = get_post('csrftoken');
+
+if(is_valid_csrf_token($token) === false){
+  set_error('不正なリクエストです。');
+
+  redirect_to(HOME_URL);
+}
+
+//セッションに保存しておいたトークンの削除
+unset($_SESSION['csrftoken']);
+//セッションの保存
+session_write_close();
+//セッションの再開
+session_start();
+
+
 try{
   $result = regist_user($db, $name, $password, $password_confirmation);
   if( $result=== false){

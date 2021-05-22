@@ -14,6 +14,23 @@ if(is_logined() === false){
 $db = get_db_connect();
 $user = get_login_user($db);
 
+$token = get_post('csrftoken');
+
+/*POSTで送られてきたtokenとセッションに登録されているtokenを照合
+$tokenが空文字ならfalse
+*/
+if(is_valid_csrf_token($token) === false){
+  set_error('不正なリクエストです。');
+
+  redirect_to(HOME_URL);
+}
+
+//セッションに保存しておいたトークンの削除
+unset($_SESSION['csrftoken']);
+//セッションの保存
+session_write_close();
+//セッションの再開
+session_start();
 
 $item_id = get_post('item_id');
 
