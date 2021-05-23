@@ -26,7 +26,7 @@ $cart_id = get_post('cart_id');
 $amount = get_post('amount');
 
 //セッションに保存しておいたトークンの削除
-unset($_SESSION['csrftoken']);
+unset($_SESSION['csrf_token']);
 //セッションの保存
 session_write_close();
 //セッションの再開

@@ -30,7 +30,7 @@ $item_id = get_post('item_id');
 $changes_to = get_post('changes_to');
 
 //セッションに保存しておいたトークンの削除
-unset($_SESSION['csrftoken']);
+unset($_SESSION['csrf_token']);
 //セッションの保存
 session_write_close();
 //セッションの再開

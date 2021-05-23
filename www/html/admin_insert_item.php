@@ -43,10 +43,6 @@ if(is_valid_csrf_token($token) === false){
   //セッションの再開
   session_start();
 
-  
-
-
-
 if(regist_item($db, $name, $price, $stock, $status, $image)){
   set_message('商品を登録しました。');
 }else {
