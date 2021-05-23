@@ -14,6 +14,20 @@ $password = get_post('password');
 
 $db = get_db_connect();
 
+$token = get_post('csrftoken');
+
+if(is_valid_csrf_token($token) === false){
+  set_error('不正なリクエストです。');
+
+  redirect_to(HOME_URL);
+}
+
+//セッションに保存しておいたトークンの削除
+unset($_SESSION['csrf_token']);
+//セッションの保存
+session_write_close();
+//セッションの再開
+session_start();
 
 $user = login_as($db, $name, $password);
 if( $user === false){

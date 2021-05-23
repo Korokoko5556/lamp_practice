@@ -14,8 +14,23 @@ if(is_logined() === false){
 $db = get_db_connect();
 $user = get_login_user($db);
 
+$token = get_post('csrftoken');
+
+if(is_valid_csrf_token($token) === false){
+  set_error('不正なリクエストです。');
+
+  redirect_to(CART_URL);
+}
+
 $cart_id = get_post('cart_id');
 $amount = get_post('amount');
+
+//セッションに保存しておいたトークンの削除
+unset($_SESSION['csrf_token']);
+//セッションの保存
+session_write_close();
+//セッションの再開
+session_start();
 
 if(update_cart_amount($db, $cart_id, $amount)){
   set_message('購入数を更新しました。');
