@@ -206,6 +206,7 @@ function is_open($item){
 }
 
 /*
+文字数を確認確認
 $is_validにtrue or falseが返ってくる
 その値はreturnする
 */

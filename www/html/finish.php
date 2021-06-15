@@ -12,6 +12,7 @@ if(is_logined() === false){
 }
 
 $db = get_db_connect();
+//cartsテーブルとitemsテーブルをJOINしている
 $user = get_login_user($db);
 
 $token = get_post('csrftoken');
@@ -40,8 +41,6 @@ if(purchase_carts($db, $carts) === false){
 
 $total_price = sum_carts($carts);
 
-/*アイテムを購入完了した後、購入履歴(historyテーブル)にINSERT
 
-*/
 
 include_once '../view/finish_view.php';

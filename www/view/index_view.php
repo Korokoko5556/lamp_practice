@@ -23,7 +23,7 @@
               <?php print h($item['name']); ?>
             </div>
             <figure class="card-body">
-              <img class="card-img" src="<?php print h(IMAGE_PATH . $item['image']); ?>">
+              <img class="card-img" src="<?php print h(IMAGE_PATH . $item['image']); ?> " class="item_image">
               <figcaption>
                 <?php print h(number_format($item['price'])); ?>円
                 <?php if($item['stock'] > 0){ ?>
@@ -41,8 +41,28 @@
         </div>
       <?php } ?>
       </div>
+      
+      <h2>人気ランキング</h2>
+      
+      <table>
+        <tr>
+          <th>順位</th>
+          <th>商品名</th>
+          <th>商品画像</th>
+        </tr>
+        
+        <?php foreach($ranking as $key => $rank){?>
+          
+            <tr>
+              <td><?php print $key +1;?></td>
+              <td><?php print h($rank['name']);?></td>
+              <td><img src="<?php print h(IMAGE_PATH . $rank['image']);?>"></td>
+            </tr>
+          <?php } ?>
+          
+        </table>
+        
     </div>
   </div>
-  
 </body>
 </html>
