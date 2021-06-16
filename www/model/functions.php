@@ -123,8 +123,7 @@ function get_messages(){
 
 /*
 $_SESSIONにuser_idが入っているかを確認
-入っていればその値をreturn 
-sessionに登録されているということはログイン済となるのかな
+入っていればTRUEを返す
 */
 function is_logined(){
   return get_session('user_id') !== '';

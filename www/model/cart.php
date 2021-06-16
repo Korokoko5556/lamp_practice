@@ -130,31 +130,72 @@ function delete_cart($db, $cart_id){
 処理できなかったらfalse エラーメッセージをset_errorに記録
 購入完了したらカートテーブルからuser_idの情報を削除する
 $cartsの中身は
+
+  購入後、カートの中身削除&在庫変動&購入履歴・明細にデータを挿入
 */
 function purchase_carts($db, $carts){
   if(validate_cart_purchase($carts) === false){
     return false;
   }
-  foreach($carts as $cart){
-    if(update_item_stock(
+
+  $db->beginTransaction();
+  try{
+    insert_history($db,$carts[0]['user_id']);
+    $order_id = $db->lastInsertId();
+    
+    foreach($carts as $cart){
+      insert_detail($db,$order_id,$cart['item_id'],$cart['price'],$cart['amount']);
+      if(update_item_stock(
         $db, 
         $cart['item_id'], 
         $cart['stock'] - $cart['amount']
-      ) === false){
-      set_error($cart['name'] . 'の購入に失敗しました。');
-    }
-  }
-  /*
-  [
-   ["item_id" =>33,"name" => "猫","stock" => 5,"amount" => 2, "user_id" => 1],
-    ["item_id" =>32,"name" => "ハリネズミ","stock" => 10,"amount" => 2, "user_id" => 1],
-    ["item_id" =>34,"name" => "犬","stock" => 10,"amount" => 1, "user_id" => 1],
-    ["item_id" =>35,"name" => "うさぎ","stock" => 10,"amount" => 2, "user_id" => 1],
-    
-  ]
-  */
-  delete_user_carts($db, $carts[0]['user_id']);
+        ) === false){
+          set_error($cart['name'] . 'の購入に失敗しました。');
+        }
+      }
+      /*
+      [
+        ["item_id" =>33,"name" => "猫","stock" => 5,"amount" => 2, "user_id" => 1],
+        ["item_id" =>32,"name" => "ハリネズミ","stock" => 10,"amount" => 2, "user_id" => 1],
+        ["item_id" =>34,"name" => "犬","stock" => 10,"amount" => 1, "user_id" => 1],
+        ["item_id" =>35,"name" => "うさぎ","stock" => 10,"amount" => 2, "user_id" => 1],
+        
+        ]
+        */
+        delete_user_carts($db, $carts[0]['user_id']);
+        $db->commit();
+      }catch(PDOException $e){
+        $db->rollback();
+        throw $e;
+      }
 }
+
+function insert_detail($db,$order_id,$item_id,$price,$amount){
+  $sql = "
+    INSERT INTO
+    purchase_details(
+      order_id,
+      item_id,
+      amount,
+      price
+    )
+    VALUES(?,?,?,?)
+    ";
+    
+    return execute_query($db,$sql,array($order_id,$item_id,$amount,$price));
+}
+
+
+function insert_history($db,$user_id){
+  $sql = "
+  INSERT INTO
+    history(user_id)
+    VALUES(?)
+    ";
+
+    return execute_query($db,$sql,array($user_id));
+}
+
 
 /*
 抽出条件$user_idでcartsテーブルを選択

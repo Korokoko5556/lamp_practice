@@ -19,7 +19,6 @@
 
 
 --テーブルの構造 'history' 
---繰り返し処理をpurchase_detailsに分離
 --ENGINE=InnoDB DEFAULT CHARSET=utf8は文字コードを個別に定義しなかった場合の省略パターン
 CREATE TABLE 'history'(
     'order_id' int(11) NOT NULL AUTO_INCREMENT,
@@ -30,9 +29,10 @@ CREATE TABLE 'history'(
 
 --購入明細テーブル
 --主キー以外の項目に依存している情報をpurchased_itemsに分離
---itemsテーブルとpurchse_detailsをINNER JOIN？(小計を出すためにpriceが必要)
+--itemsテーブルとpurchse_detailsを結合(商品名が必要)
 CREATE TABLE 'purchase_details'(
     'order_id' int(11) NOT NULL,
     'item_id' int(11) NOT NULL,
-    'amount' int (11) NOT NULL
+    'amount' int (11) NOT NULL,
+    'price' int(11) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
